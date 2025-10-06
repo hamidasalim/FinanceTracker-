@@ -1,0 +1,71 @@
+# ---------------------------------------------------------------- #
+# Build Artifacts and Target Directories
+# ---------------------------------------------------------------- #
+HELP.md
+/target/
+build/
+
+# Maven Wrapper JAR (The wrapper script is kept, but the downloaded jar is ignored)
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# General Java Files
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# ---------------------------------------------------------------- #
+# IDE Configuration Files
+# ---------------------------------------------------------------- #
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+/out/
+
+### STS (Spring Tool Suite) ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# ---------------------------------------------------------------- #
+# Logs and Runtime Files
+# ---------------------------------------------------------------- #
+*.log
+logs/
+tmp/
+
+# ---------------------------------------------------------------- #
+# Critical Security & Environment Files
+# ---------------------------------------------------------------- #
+# Prevents committing files that contain database credentials or API keys.
+# (If you are using profile-specific config, e.g., application-dev.yml)
+/src/main/resources/application*.properties
+/src/main/resources/application*.yml
+secrets.txt
+
+# ---------------------------------------------------------------- #
+# OS Files
+# ---------------------------------------------------------------- #
+.DS_Store
+Thumbs.db
