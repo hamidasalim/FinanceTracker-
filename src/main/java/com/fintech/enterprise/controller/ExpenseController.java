@@ -26,10 +26,9 @@ public class ExpenseController {
 
     @PostMapping("/submit")
     public ResponseEntity<Expense> createExpense(
-            @RequestBody ExpenseRequestDTO expenseDto, // *** CHANGED: Use DTO ***
-            Principal principal) {                     // *** ADDED: Get authenticated user ***
+            @RequestBody ExpenseRequestDTO expenseDto,
+            Principal principal) {
 
-        // Pass the DTO and the user's name (ID/username) to the service
         Expense newExpense = expenseService.createExpense(expenseDto);
         return new ResponseEntity<>(newExpense, HttpStatus.CREATED);
     }

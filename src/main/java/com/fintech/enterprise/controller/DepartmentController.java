@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * REST Controller for managing Department entities.
- * Base path: /api/departments
- */
 @RestController
 @RequestMapping("/api/departments")
 public class DepartmentController {
@@ -29,10 +25,6 @@ public class DepartmentController {
 
     // --- CRUD Endpoints (Admin only) ---
 
-    /**
-     * Creates a new department.
-     * POSTMAN TEST: POST {{baseURL}}/api/departments
-     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Department> createDepartment(@RequestBody Department department) {
@@ -40,10 +32,7 @@ public class DepartmentController {
         return new ResponseEntity<>(createdDepartment, HttpStatus.CREATED);
     }
 
-    /**
-     * Retrieves all departments.
-     * POSTMAN TEST: GET {{baseURL}}/api/departments
-     */
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<List<Department>> getAllDepartments() {
@@ -51,10 +40,6 @@ public class DepartmentController {
         return ResponseEntity.ok(departments);
     }
 
-    /**
-     * Retrieves a department by ID.
-     * POSTMAN TEST: GET {{baseURL}}/api/departments/{id}
-     */
     @GetMapping("/{id}")
     public ResponseEntity<Department> getDepartmentById(@PathVariable Long id) {
         return departmentService.findDepartmentById(id)
@@ -62,10 +47,6 @@ public class DepartmentController {
                 .orElseThrow(() -> new EntityNotFoundException("Department not found with ID: " + id));
     }
 
-    /**
-     * Updates an existing department.
-     * POSTMAN TEST: PUT {{baseURL}}/api/departments/{id}
-     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Department> updateDepartment(@PathVariable Long id, @RequestBody Department departmentDetails) {
@@ -73,10 +54,6 @@ public class DepartmentController {
         return ResponseEntity.ok(updatedDepartment);
     }
 
-    /**
-     * Deletes a department.
-     * POSTMAN TEST: DELETE {{baseURL}}/api/departments/{id}
-     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
@@ -86,10 +63,6 @@ public class DepartmentController {
 
     // --- Membership Endpoints (Admin only) ---
 
-    /**
-     * Adds a user as a member to the specified department.
-     * POSTMAN TEST: POST {{baseURL}}/api/departments/{departmentId}/members/{userId}
-     */
     @PostMapping("/{departmentId}/members/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Department> addMemberToDepartment(@PathVariable Long departmentId, @PathVariable Long userId) {
@@ -97,10 +70,6 @@ public class DepartmentController {
         return ResponseEntity.ok(updatedDepartment);
     }
 
-    /**
-     * Removes a user from the specified department.
-     * POSTMAN TEST: DELETE {{baseURL}}/api/departments/{departmentId}/members/{userId}
-     */
     @DeleteMapping("/{departmentId}/members/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Department> removeMemberFromDepartment(@PathVariable Long departmentId, @PathVariable Long userId) {
@@ -110,10 +79,6 @@ public class DepartmentController {
 
     // --- Reporting Endpoint (Admin/Manager only) ---
 
-    /**
-     * Retrieves a budget overview for all departments.
-     * POSTMAN TEST: GET {{baseURL}}/api/departments/budget-overview
-     */
     @GetMapping("/budget-overview")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     public ResponseEntity<List<BudgetOverviewDTO>> getBudgetOverview() {

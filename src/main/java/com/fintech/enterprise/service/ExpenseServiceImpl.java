@@ -139,16 +139,13 @@ public class ExpenseServiceImpl implements ExpenseService {
                 throw new IllegalStateException("Expense has already been reviewed.");
             }
 
-            // Fetch and set reviewer
             expense.setReviewedBy(userService.findUserById(reviewerId)
                     .orElseThrow(() -> new EntityNotFoundException("Reviewer not found with ID: " + reviewerId)));
 
             expense.setStatus(newStatus);
             expense.setDateReviewed(LocalDate.now());
 
-            // CRITICAL STEP: If approved, update the department's spent amount (implement this in DepartmentService)
             if (newStatus == ExpenseStatus.APPROVED) {
-                // departmentService.updateSpentAmount(expense.getDepartment().getId(), expense.getAmount());
             }
 
             return expenseRepository.save(expense);

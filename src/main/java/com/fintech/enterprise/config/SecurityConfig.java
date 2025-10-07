@@ -20,12 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-/**
- * Main Spring Security configuration class.
- * - Enables Method Security (for @PreAuthorize).
- * - Configures Basic Authentication (for simple API testing).
- * - Loads users from the database using UserRepository.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize
@@ -34,17 +28,12 @@ public class SecurityConfig {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Defines the password encoder for secure password hashing.
-     */
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Defines the UserDetailsService to load users from the database.
-     */
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
@@ -56,9 +45,7 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    /**
-     * Configures the main security filter chain for HTTP requests.
-     */
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * REST Controller for managing User entities.
- * User management operations (create, update, delete) are restricted to ADMIN.
- */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -71,9 +67,6 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Retrieves a user by their username. Restricted to ADMIN.
-     */
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
@@ -82,10 +75,6 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Retrieves the details of the currently authenticated user (the "me" endpoint).
-     * Accessible by any authenticated user.
-     */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public User getAuthenticatedUser() {

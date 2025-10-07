@@ -5,10 +5,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * Data Transfer Object (DTO) used for summarizing the budget and spending
- * status of a department for reporting purposes.
- */
 @Data
 @AllArgsConstructor
 public class BudgetOverviewDTO {

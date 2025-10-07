@@ -1,8 +1,5 @@
 package com.fintech.enterprise.model;
 
-/**
- * Defines standard categories for expense tracking.
- */
 public enum ExpenseCategory {
     TRAVEL,
     SOFTWARE,

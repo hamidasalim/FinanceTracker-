@@ -9,9 +9,6 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * Represents an expense submitted by a user for approval.
- */
 @Entity
 @Table(name = "expense")
 @Data
@@ -45,11 +42,8 @@ public class Expense {
 
     // --- Relationships ---
 
-    // The user who submitted the expense. (Many expenses to one user)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    // @JsonManagedReference is used here to include the User when Expense is serialized.
-    // The 'User' model must use @JsonIgnore or @JsonBackReference on its 'expenses' list.
     @JsonManagedReference
     private User submittedBy;
 

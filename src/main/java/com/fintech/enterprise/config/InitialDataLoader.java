@@ -13,10 +13,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Initializes the database with starter data (Users and Departments)
- * when the application starts, primarily for development and testing.
- */
 @Component
 public class InitialDataLoader implements CommandLineRunner {
 

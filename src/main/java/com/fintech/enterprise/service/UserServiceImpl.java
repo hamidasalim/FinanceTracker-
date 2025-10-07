@@ -13,11 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Provides the concrete implementation for the UserService interface, handling business
- * logic related to User entities, including security considerations like password encoding
- * and retrieving the currently authenticated user.
- */
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -35,7 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        // CRITICAL: Encode the plain text password before saving it to the database
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -45,22 +39,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        // 1. Update Username
         if (userDetails.getUsername() != null && !userDetails.getUsername().trim().isEmpty()) {
             user.setUsername(userDetails.getUsername());
         }
 
-        // 2. Update Role
         if (userDetails.getRole() != null) {
             user.setRole(userDetails.getRole());
         }
 
-        // 3. Update Password (only if a new password string is provided)
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
         }
 
-        // 4. Update Department
         if (userDetails.getDepartment() != null) {
             user.setDepartment(userDetails.getDepartment());
         }
@@ -93,10 +83,8 @@ public class UserServiceImpl implements UserService {
     // --- CRITICAL FIX: Method to retrieve the authenticated user ---
     @Override
     public User getCurrentAuthenticatedUser() {
-        // Get the username (principal name) from the Spring Security context
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // Fetch the corresponding User entity from the database
         return findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Authenticated user not found in database: " + username));
     }

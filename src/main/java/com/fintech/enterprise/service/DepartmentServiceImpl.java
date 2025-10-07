@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Provides the concrete implementation for the DepartmentService interface, handling business
- * logic related to Department entities, including budget calculation and member management.
- */
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
@@ -36,7 +32,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department createDepartment(Department department) {
-        // Initialize spent amount to zero when creating a new department
         if (department.getSpentAmount() == null) {
             department.setSpentAmount(BigDecimal.ZERO);
         }
@@ -85,7 +80,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        // Set the Department field on the User side (This manages the foreign key)
         user.setDepartment(department);
         userRepository.save(user);
 
@@ -101,12 +95,10 @@ public class DepartmentServiceImpl implements DepartmentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        // CRITICAL: Ensure the user being removed actually belongs to this department
         if (!departmentId.equals(user.getDepartment().getId())) {
             throw new IllegalArgumentException("User ID " + userId + " does not belong to Department ID " + departmentId);
         }
 
-        // Set the Department field to null on the User side
         user.setDepartment(null);
         userRepository.save(user);
 
@@ -115,9 +107,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     // --- Reporting ---
 
-    /**
-     * Calculates the budget remaining percentage for all departments.
-     */
     @Override
     public List<BudgetOverviewDTO> getBudgetOverview() {
         return departmentRepository.findAll().stream()
@@ -131,7 +120,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                                 .multiply(BigDecimal.valueOf(100));
                     }
 
-                    // Calculate the spent percentage for a more complete report
                     BigDecimal spentPercent = dept.getYearlyBudget().compareTo(BigDecimal.ZERO) > 0
                             ? dept.getSpentAmount().divide(dept.getYearlyBudget(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))
                             : BigDecimal.ZERO;
