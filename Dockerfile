@@ -40,9 +40,3 @@ EXPOSE 8080
 
 # The command to run the application when the container starts
 ENTRYPOINT ["java", "-jar", "app.jar"]
-```eof
-
-This `Dockerfile` is robust, uses best practices like multi-stage building for a small final image, and is configured to use the Maven executable already present in the base image.
-
-If you want to learn more about how multi-stage builds create smaller and more secure images, this video is a good resource: [Optimize Your Java Spring Boot Application with Multi-Stage Docker Build](https://www.youtube.com/watch?v=gV3_y-DaNr8).
-http://googleusercontent.com/youtube_content/9
