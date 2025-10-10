@@ -1,0 +1,121 @@
+# 💰 FinTrack - Simple Java Expense App
+
+FinTrack is a small Java Spring Boot application for managing **departments** and **expenses**.  
+It is a practice project to learn **Java**, **Spring Boot**, **REST APIs**, and **JWT authentication**.
+
+---
+
+## 🚀 Features
+
+- 🔐 User authentication with JWT
+- 🏢 CRUD for **Departments**
+- 💸 CRUD for **Expenses**
+- ✅ Expense approval workflow
+- 👤 Retrieve current authenticated user info
+
+---
+
+## 🛠 Tech Stack
+
+- Java 21
+- Spring Boot
+- PostgreSQL (local or cloud via Supabase)
+- JWT for authentication
+- Maven for build
+
+---
+
+## ⚙️ Setup & Run
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/yourusername/fintrack-backend.git
+cd fintrack-backend
+
+
+2️⃣ Configure database
+
+Edit src/main/resources/application.properties depending on your environment.
+
+Local PostgreSQL;
+spring.datasource.url=jdbc:postgresql://localhost:5432/fintrack_db
+spring.datasource.username=postgres
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+server.port=8080
+
+
+Cloud (Supabase / remote PostgreSQL)
+
+spring.datasource.url=jdbc:postgresql://<your-supabase-host>:5432/postgres
+spring.datasource.username=<your-db-username>
+spring.datasource.password=<your-db-password>
+spring.jpa.hibernate.ddl-auto=update
+server.port=8080
+
+
+3️⃣ Build and run
+mvn clean install
+mvn spring-boot:run
+
+
+🗂 API Endpoints
+🔐 Authentication
+
+POST /api/auth/login – Login and get JWT
+Body example:
+
+{
+  "username": "jslim",
+  "password": "yourpassword"
+}
+
+
+POST /api/auth/register – Register a new user
+
+GET /api/users/me – Get current authenticated user info
+
+🏢 Departments
+
+GET /api/departments – List all departments
+
+POST /api/departments – Create a department
+
+PUT /api/departments/{id} – Update a department
+
+DELETE /api/departments/{id} – Delete a department
+
+💸 Expenses
+
+GET /api/expenses – List all expenses
+
+POST /api/expenses/submit – Submit a new expense
+Body example:
+
+{
+  "title": "Client Lunch",
+  "description": "Lunch with client",
+  "amount": 85.50,
+  "category": "TRAVEL",
+  "departmentId": 4
+}
+
+
+PUT /api/expenses/{id} – Update an expense (only PENDING)
+
+DELETE /api/expenses/{id} – Delete an expense
+
+PATCH /api/expenses/{id}/approve – Approve an expense (ADMIN/Manager)
+
+PATCH /api/expenses/{id}/deny/{reviewerId} – Deny an expense
+
+📝 Notes
+
+JWT token is required for /api/** endpoints except authentication routes.
+
+User roles determine permissions (ADMIN, MANAGER, etc.).
+
+Expenses can only be updated when PENDING.
+
+Departments can be deleted without deleting users
+
