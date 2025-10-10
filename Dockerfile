@@ -1,6 +1,6 @@
-# ---------------------------------------------------------------- #
+# ----------------------------------------------------------------
 # Stage 1: Build the application (using a Maven/JDK image)
-# ---------------------------------------------------------------- #
+# ----------------------------------------------------------------
 # Using a certified Eclipse Temurin JDK 21 image for the build stage
 FROM maven:3.9-eclipse-temurin-21 AS build
 
@@ -11,8 +11,10 @@ WORKDIR /app
 COPY pom.xml .
 
 # Copy the Maven wrapper files (if using a Maven wrapper)
-COPY .mvn/ .mvn
-COPY mvnw .
+# NOTE: User confirmed .mvn/ and mvnw files are not in the repository.
+# Commenting out these lines to prevent "not found" error.
+# COPY .mvn/ .mvn
+# COPY mvnw .
 
 # Copy the rest of the source code
 COPY src ./src
@@ -20,10 +22,9 @@ COPY src ./src
 # Build the project, skipping tests for a faster deployment build
 RUN mvn clean install -DskipTests
 
-
-# ---------------------------------------------------------------- #
+# ----------------------------------------------------------------
 # Stage 2: Create the final, lightweight runtime image (JRE only)
-# ---------------------------------------------------------------- #
+# ----------------------------------------------------------------
 # Using a smaller JRE-only image based on JDK 21 for the final artifact
 FROM eclipse-temurin:21-jre-jammy
 
@@ -39,3 +40,9 @@ EXPOSE 8080
 
 # The command to run the application when the container starts
 ENTRYPOINT ["java", "-jar", "app.jar"]
+```eof
+
+This `Dockerfile` is robust, uses best practices like multi-stage building for a small final image, and is configured to use the Maven executable already present in the base image.
+
+If you want to learn more about how multi-stage builds create smaller and more secure images, this video is a good resource: [Optimize Your Java Spring Boot Application with Multi-Stage Docker Build](https://www.youtube.com/watch?v=gV3_y-DaNr8).
+http://googleusercontent.com/youtube_content/9
