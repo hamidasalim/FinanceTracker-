@@ -25,7 +25,7 @@ RUN mvn clean install -DskipTests
 # Stage 2: Create the final, lightweight runtime image (JRE only)
 # ---------------------------------------------------------------- #
 # Using a smaller JRE-only image based on JDK 21 for the final artifact
-FROM eclipse-temurin:21-jre-focal
+FROM eclipse-temurin:21-jre-jammy
 
 # Set the working directory
 WORKDIR /app
