@@ -5,10 +5,13 @@ import com.fintech.enterprise.model.Role;
 import com.fintech.enterprise.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder; // Required Import
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,11 +86,28 @@ public class UserServiceImpl implements UserService {
     // --- CRITICAL FIX: Method to retrieve the authenticated user ---
     @Override
     public User getCurrentAuthenticatedUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            throw new EntityNotFoundException("No authenticated user found");
+        }
+
+        String username;
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof UserDetails userDetails) {
+            username = userDetails.getUsername();
+        } else if (principal instanceof String str) {
+            username = str; // fallback
+        } else {
+            throw new IllegalStateException("Cannot extract username from principal: " + principal);
+        }
 
         return findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Authenticated user not found in database: " + username));
     }
+
+
 
     // --- DELETE Operation ---
 

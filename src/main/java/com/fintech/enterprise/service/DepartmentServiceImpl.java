@@ -66,6 +66,15 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void deleteDepartment(Long id) {
+        Department dept = departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+
+        // Unlink all users from this department
+        if (dept.getMembers() != null) {
+            dept.getMembers().forEach(user -> user.setDepartment(null));
+        }
+
+        // Now delete the department
         departmentRepository.deleteById(id);
     }
 
