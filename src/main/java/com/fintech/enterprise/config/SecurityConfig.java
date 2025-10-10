@@ -1,33 +1,26 @@
 package com.fintech.enterprise.config;
 
-import com.fintech.enterprise.model.Role;
-import com.fintech.enterprise.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fintech.enterprise.security.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize
+@EnableMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    private final JwtAuthFilter jwtAuthFilter;
+    private final UserDetailsService userDetailsService; // now injected automatically
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,36 +28,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .map(user -> org.springframework.security.core.userdetails.User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword()) // Already hashed
-                        .roles(user.getRole().name()) // Set the role as a Spring Security role
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Disable CSRF for stateless REST API
-                .csrf(AbstractHttpConfigurer::disable)
-
-                // 2. Set Session Management to stateless (no session cookies)
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 3. Configure authorization rules for endpoints
-                .authorizeHttpRequests(auth -> auth
-                        // Allow all authenticated users to access the API endpoints
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().authenticated()
-                )
-
-                // 4. Use Basic Authentication for login (Username/Password)
-                .httpBasic(withDefaults());
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

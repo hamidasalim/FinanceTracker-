@@ -3,9 +3,7 @@ package com.fintech.enterprise.model;
 import com.fasterxml.jackson.annotation.JsonBackReference; // <-- NEW IMPORT: Required to break the JSON serialization loop
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.util.List; // <-- NEW IMPORT
 @Entity
@@ -13,6 +11,9 @@ import java.util.List; // <-- NEW IMPORT
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
