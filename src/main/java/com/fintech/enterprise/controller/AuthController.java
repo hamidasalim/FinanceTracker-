@@ -1,6 +1,5 @@
 package com.fintech.enterprise.controller;
 
-import com.fintech.enterprise.model.Role;
 import com.fintech.enterprise.model.User;
 import com.fintech.enterprise.service.AuthService;
 import com.fintech.enterprise.service.dto.LoginDTO;
@@ -20,13 +19,32 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDTO request) {
-        User user = authService.register(request.getUsername(), request.getPassword(), request.getRole());
-        return ResponseEntity.ok(user);
+        try {
+            User user = authService.register(
+                    request.getUsername(),
+                    request.getPassword(),
+                    request.getRole()
+            );
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO request) {
-        String token = authService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(Map.of("token", token));
+        try {
+            String token = authService.login(
+                    request.getUsername(),
+                    request.getPassword()
+            );
+            return ResponseEntity.ok(Map.of("token", token));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }
