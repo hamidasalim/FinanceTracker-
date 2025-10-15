@@ -2,6 +2,7 @@
 
 FinTrack is a small Java Spring Boot application for managing **departments** and **expenses**.  
 It is a practice project to learn **Java**, **Spring Boot**, **REST APIs**, and **JWT authentication**.
+ demo link : https://financretrackfront.netlify.app
 
 ---
 
