@@ -14,17 +14,28 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
+        // allowed origins
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",                     // local dev
-                "https://financretrackfront.netlify.app"    // your Netlify frontend
+                "http://localhost:5173",                   // local dev
+                "https://financretrackfront.netlify.app"  // Netlify frontend
         ));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        // allowed methods
+        configuration.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
+        ));
+
+        // allowed headers
         configuration.setAllowedHeaders(List.of("*"));
+
+        // allow credentials
         configuration.setAllowCredentials(true);
 
+        // apply to all paths
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }
